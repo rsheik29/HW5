@@ -20,15 +20,15 @@
 
   // TODO: Fetch a list of APODs from the database.
   // You code should be something like:
-  // fetch(...)
-  //    .then(response => response.json())
-  //    .then(json => {
-  //        apods = json...
-  //        for (apod of apods) {
-  //           console.log(apod);
-  //           al.appendChild(makeAPOD(apod[0], apod[1]));
-  //        }
-  //    });
+  fetch("http://localhost:8080/api/favorite")
+     .then(response => response.json())
+     .then(json => {
+         apods = json.favorites; 
+         for (apod of apods) {
+            console.log(apod);
+            al.appendChild(makeAPOD(apod.image_url, apod.date));
+         }
+     });
   // Here the apods are filled with dummy data.
   apods = [
     [

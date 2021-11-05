@@ -23,13 +23,45 @@ document.getElementById("heart-button").addEventListener("click", () => {
   if (heart_status == 0) {
     heart.src = "static/heart-filled.png";
     heart_status = 1;
-    // TODO: update the database and mark this image as a favorite image.
+           // TODO: update the database and mark this image as a favorite image.
+const photo = {
+      image_url: document.getElementById("apod-image").src,
+      date: document.getElementById("apod-date").innerHTML
+  };
+  console.log(photo.date);
+  console.log(photo.image_url);
+  fetch('http://localhost:8080/api/add', {
+          method: 'POST',
+          body: JSON.stringify(photo),
+          headers: {
+              'Content-type': 'application/json; charset=UTF-8'
+          }
+      })
+      .then(response => response.json())
+      .then(json => {
+          console.log(json);
+      });
   } else {
     heart_status = 0;
     heart.src = "static/heart.png";
     // TODO: update the database and un-mark this image as a favorite image.
-  }
-});
+    const photo = {
+      date: document.getElementById("apod-date").innerHTML
+    };
+
+    fetch('http://localhost:8080/api/delete', {
+            method: 'DELETE',
+            body: JSON.stringify(photo),
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8'
+            }
+        })
+        .then(response => response.json())
+        .then(json => {
+            console.log(json);
+        });
+    }
+  });
 
 document.getElementById("next-button").addEventListener("click", () => {
   document.getElementById("heart-button").src = "static/heart.png";

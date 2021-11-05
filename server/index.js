@@ -15,13 +15,25 @@ db.on("error", (err) => {
   console.error("connection error:", err);
 });
 
-const app = express();
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+// here
+app.use(express.json()); 
+app.use(express.urlencoded({ extended: true })); 
+
+app.use(cors());
 
 var port = process.env.PORT || 8080;
 
 var router = express.Router();
+
+//
+const Schema = mongoose.Schema
+
+const item = new Schema({
+  image_url: String,
+	date: String
+})
+
+const PHOTO = mongoose.model("PHOTO", item)
 
 // The method of the root url. Be friendly and welcome our user :)
 router.get("/", function (req, res) {
@@ -29,18 +41,35 @@ router.get("/", function (req, res) {
 });
 
 router.get("/favorite", function (req, res) {
-  // TODO:
-  res.json({ message: "TODO: here's the GET route" });
+  Images.find().then((results) => {
+    res.json({ results });
+  });
 });
 
 router.post("/add", function (req, res) {
-  // TODO:
-  res.json({ message: "TODO: Here's the add route" });
+  const url = req.body.image_url;
+  const date = req.body.date;
+  const newImage = new Images({
+    date: date,
+    image_url: url,
+  });
+  newImage.save((error, doc) => {
+    if (error) {
+      res.json({ status: "failure" });
+    } else {
+      res.json({
+        date: date,
+        image_url: url,
+      });
+    }
+  });
 });
 
 router.post("/delete", function (req, res) {
-  // TODO:
-  res.json({ message: "TODO: Here's the delete route" });
+  const date = req.body.date;
+  Images.findOneAndDelete({ date: date }).then(() => {
+    res.json({ message: "delete success" });
+  });
 });
 
 app.use("/api", router); // API Root url at: http://localhost:8080/api
